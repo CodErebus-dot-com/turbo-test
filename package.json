@@ -1,5 +1,6 @@
 {
   "name": "turbo-test",
+  "author": "coderebus-dot-com",
   "version": "0.0.0",
   "private": true,
   "workspaces": [
@@ -20,6 +21,12 @@
   "engines": {
     "node": ">=14.0.0"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@code-shaper/plugin": "latest",
+    "@code-shaper/react": "latest",
+    "@code-shaper/shaper-utils": "latest",
+    "@code-shaper/typescript": "latest",
+    "@code-shaper/custom-cli": "latest"
+  },
   "packageManager": "npm@9.2.0"
 }
