@@ -1,4 +1,11 @@
 {
   "version": 2,
-  "projects": {}
+  "projects": {
+    "federeratedapp": "apps/federeratedapp",
+    "graph2": "apps/graph2",
+    "graphserviceapp": "apps/graphserviceapp",
+    "mockapp": "apps/mockapp",
+    "mocker2": "apps/mocker2",
+    "next-app": "apps/next-app"
+  }
 }

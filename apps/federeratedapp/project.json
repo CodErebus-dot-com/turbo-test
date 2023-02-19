@@ -1,0 +1,71 @@
+{
+  "root": "apps/federeratedapp",
+  "sourceRoot": "apps/federeratedapp/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/node:webpack",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/federeratedapp",
+        "main": "apps/federeratedapp/src/server.ts",
+        "tsConfig": "apps/federeratedapp/tsconfig.app.json",
+        "assets": [
+          {
+            "glob": "**/.env",
+            "input": "apps/federeratedapp/",
+            "output": "."
+          }
+        ]
+      },
+      "configurations": {
+        "production": {
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false,
+          "fileReplacements": [
+            {
+              "replace": "apps/federeratedapp/src/environments/environment.ts",
+              "with": "apps/federeratedapp/src/environments/environment.prod.ts"
+            }
+          ]
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/node:node",
+      "options": {
+        "buildTarget": "federeratedapp:build",
+        "watch": true,
+        "port": 1904
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/federeratedapp/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/federeratedapp"],
+      "options": {
+        "jestConfig": "apps/federeratedapp/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "docker": {
+      "executor": "@nx-tools/nx-docker:build",
+      "options": {
+        "file": "apps/federeratedapp/Dockerfile",
+        "push": false,
+        "load": false,
+        "tags": [
+          "psregistry.pscloudhub.com/psinnersource/xt/micro-frontend/genesis/federeratedapp:latest"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

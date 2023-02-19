@@ -1,0 +1,76 @@
+{
+  "root": "apps/graphserviceapp",
+  "sourceRoot": "apps/graphserviceapp/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/node:webpack",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/graphserviceapp",
+        "main": "apps/graphserviceapp/src/server.ts",
+        "tsConfig": "apps/graphserviceapp/tsconfig.app.json",
+        "assets": [
+          {
+            "glob": "**/schema.graphql",
+            "input": "apps/graphserviceapp/src/",
+            "output": "."
+          },
+          {
+            "glob": "**/.env",
+            "input": "apps/graphserviceapp/",
+            "output": "."
+          }
+        ]
+      },
+      "configurations": {
+        "production": {
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false,
+          "fileReplacements": [
+            {
+              "replace": "apps/graphserviceapp/src/environments/environment.ts",
+              "with": "apps/graphserviceapp/src/environments/environment.prod.ts"
+            }
+          ]
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/node:node",
+      "options": {
+        "buildTarget": "graphserviceapp:build",
+        "watch": true,
+        "port": 1888
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/graphserviceapp/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/graphserviceapp"],
+      "options": {
+        "jestConfig": "apps/graphserviceapp/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "docker": {
+      "executor": "@nx-tools/nx-docker:build",
+      "options": {
+        "file": "apps/graphserviceapp/Dockerfile",
+        "push": false,
+        "load": false,
+        "tags": [
+          "psregistry.pscloudhub.com/psinnersource/xt/micro-frontend/genesis/graphserviceapp:latest"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

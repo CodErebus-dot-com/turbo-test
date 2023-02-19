@@ -1,0 +1,76 @@
+{
+  "root": "apps/graph2",
+  "sourceRoot": "apps/graph2/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/node:webpack",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/graph2",
+        "main": "apps/graph2/src/server.ts",
+        "tsConfig": "apps/graph2/tsconfig.app.json",
+        "assets": [
+          {
+            "glob": "**/schema.graphql",
+            "input": "apps/graph2/src/",
+            "output": "."
+          },
+          {
+            "glob": "**/.env",
+            "input": "apps/graph2/",
+            "output": "."
+          }
+        ]
+      },
+      "configurations": {
+        "production": {
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false,
+          "fileReplacements": [
+            {
+              "replace": "apps/graph2/src/environments/environment.ts",
+              "with": "apps/graph2/src/environments/environment.prod.ts"
+            }
+          ]
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/node:node",
+      "options": {
+        "buildTarget": "graph2:build",
+        "watch": true,
+        "port": 1910
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/graph2/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/graph2"],
+      "options": {
+        "jestConfig": "apps/graph2/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "docker": {
+      "executor": "@nx-tools/nx-docker:build",
+      "options": {
+        "file": "apps/graph2/Dockerfile",
+        "push": false,
+        "load": false,
+        "tags": [
+          "psregistry.pscloudhub.com/psinnersource/xt/micro-frontend/genesis/graph2:latest"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

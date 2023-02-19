@@ -1,0 +1,40 @@
+scalar GraphQLDateTime
+
+directive @cost(
+  complexity: Int
+  multipliers: [String]
+  useMultipliers: Boolean # default true
+) on OBJECT | FIELD_DEFINITION
+
+extend type Query {
+  """
+  Simple query to check health
+  """
+  timeAtGraph2: GraphQLDateTime! @cost(complexity: 2)
+
+  """
+  Get details of graph2 including list of graph2 status
+  """
+  graph2Detail: Graph2Detail! @cost(complexity: 10)
+}
+
+type Graph2Detail{
+  partyId: ID!
+  nameDetails: NameDetails!
+  dateOfBirth: GraphQLDateTime!
+  gender: GenderEnum!
+}
+
+type NameDetails {
+  firstName: String
+  middleName: String
+  lastName: String
+  title: String
+}
+
+enum GenderEnum {
+  MALE
+  FEMALE
+  NON_BINARY
+  UNSPECIFIED
+}

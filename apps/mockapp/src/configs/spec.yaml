@@ -1,0 +1,183 @@
+openapi: 3.0.1
+info:
+  title: Customer API
+  description: Customer API
+  version: v2.0.0
+servers:
+  - url: "https://{hostname}:{port}/customer/v2.0"
+    variables:
+      hostname:
+        default: "localhost"
+      port:
+        default: "443"
+        enum:
+          - "443"
+          - "8443"
+  - url: "http://{hostname}:{port}/customer/v2.0"
+    variables:
+      hostname:
+        default: "localhost"
+      port:
+        default: "9080"
+        enum:
+          - "9080"
+security:
+  - bearerAuth: []
+  - systemId: []
+tags:
+  - name: "Customer"
+    description: "Customer Service APIs"
+paths:
+  /customers/{partyId}:
+    get:
+      tags:
+        - Customer
+      summary: Returns customer details
+      description: Customer API
+      operationId: getCustomerDetails
+      parameters:
+        - name: Authorization
+          in: header
+          description: JWT Token
+          required: false
+          schema:
+            type: string
+        - name: partyId
+          in: path
+          description: party Id
+          required: true
+          schema:
+            type: string
+      responses:
+        "404":
+          description: Customer Doesn't exist
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorData"
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReadCustomerAggregatedWrapper"
+        "415":
+          description: Unsupported Media Type
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorData"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorData"
+        "401":
+          description: Access Denied
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorData"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorData"
+components:
+  schemas:
+    ReadCustomerWithEnumStrings:
+      type: "object"
+      properties:
+        CustomerId:
+          type: "string"
+          example: "0214365878"
+        TitleText:
+          type: "string"
+          example: "Mr"
+        FirstName:
+          minLength: 2
+          type: "string"
+          example: "Ross"
+          pattern:
+            "^(?!')(?!-)(?!\\.)(?!.*[\\'\\-\\.]{2})(?!.*'$)(?!.*-$)(?!.* $)[A-Za-z'\
+            \ \\.-]*$"
+        MiddleName:
+          minLength: 2
+          type: "string"
+          nullable: true
+          example: "James"
+          pattern:
+            "^(?!')(?!-)(?!\\.)(?!.*[\\'\\-\\.]{2})(?!.*'$)(?!.*-$)(?!.* $)[A-Za-z'\
+            \ \\.-]*$"
+          default: "null"
+        LastName:
+          minLength: 2
+          type: "string"
+          example: "Poldark"
+          pattern:
+            "^(?!')(?!-)(?!\\.)(?!.*[\\'\\-\\.]{2})(?!.*'$)(?!.*-$)(?!.* $)[A-Za-z'\
+            \ \\.-]*$"
+        Suffix:
+          type: "string"
+          nullable: true
+        DateOfBirth:
+          type: "string"
+          format: "date"
+          example: "1950-12-23"
+        Gender:
+          type: "integer"
+          description:
+            "* Male = 1 * Female = 2 * Unspecified/Prefer not to say = 3 *\
+            \ Non-Binary = 4"
+          nullable: true
+          example: 2
+          default: 1
+          enum:
+            - 1
+            - 2
+            - 3
+            - 4
+        AddressLine1:
+          type: "string"
+          example: "Flat 101"
+        AddressLine2:
+          type: "string"
+          example:  "Portland Street"
+        PostCode:
+          type: "string"
+          example: "E14 1AB"
+        Country:
+          type: "string"
+          example: "United Kingdom"
+    ReadCustomerAggregatedWrapper:
+      type: "object"
+      properties:
+        Data:
+          type: "object"
+          properties:
+            Customer:
+              $ref: "#/components/schemas/ReadCustomerWithEnumStrings"
+    ErrorData:
+      properties:
+        Error:
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              Code:
+                type: "string"
+              ReasonCode:
+                type: "string"
+              Message:
+                type: "string"
+securitySchemes:
+    bearerAuth:
+      type: "http"
+      scheme: "bearer"
+      bearerFormat: "JWT"
+    systemId:
+      type: "apiKey"
+      name: "x-internal-system-id"
+      in: "header"

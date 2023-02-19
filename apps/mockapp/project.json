@@ -1,0 +1,73 @@
+{
+    "root": "apps/mockapp",
+    "sourceRoot": "apps/mockapp/src",
+    "projectType": "application",
+    "targets": {
+      "build": {
+        "executor": "@nrwl/node:webpack",
+        "outputs": ["{options.outputPath}"],
+        "options": {
+          "outputPath": "dist/apps/mockapp",
+          "main": "apps/mockapp/src/index.ts",
+          "tsConfig": "apps/mockapp/tsconfig.app.json",
+          "assets": [
+            "apps/mockapp/src/configs",
+            {
+              "glob": "**/.env",
+              "input": "apps/mockapp/",
+              "output": "."
+            }
+          ]
+        },
+        "configurations": {
+          "production": {
+            "optimization": true,
+            "extractLicenses": true,
+            "inspect": false,
+            "fileReplacements": [
+              {
+                "replace": "apps/mockapp/src/environments/environment.ts",
+                "with": "apps/mockapp/src/environments/environment.prod.ts"
+              }
+            ]
+          }
+        }
+      },
+      "serve": {
+      "executor": "@nrwl/node:node",
+        "options": {
+          "buildTarget": "mockapp:build",
+          "watch": true,
+          "port": 3053
+        }
+      },
+      "lint": {
+        "executor": "@nrwl/linter:eslint",
+        "outputs": ["{options.outputFile}"],
+        "options": {
+          "lintFilePatterns": ["apps/mockapp/src/index.ts"]
+        }
+      },
+      "test": {
+        "executor": "@nrwl/jest:jest",
+        "outputs": ["coverage/apps/mockapp"],
+        "options": {
+          "jestConfig": "apps/mockapp/jest.config.js",
+          "passWithNoTests": true
+        }
+      },
+      "docker": {
+        "executor": "@nx-tools/nx-docker:build",
+        "options": {
+          "file": "apps/mockapp/Dockerfile",
+          "push": false,
+          "load": false,
+          "tags": [
+            "psregistry.pscloudhub.com/psinnersource/xt/micro-frontend/genesis/mockapp:latest"
+          ]
+        }
+      }
+    },
+    "tags": []
+  }
+  
